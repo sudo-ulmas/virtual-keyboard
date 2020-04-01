@@ -66,6 +66,7 @@ const Keyboard = {
         case 'Caps Lock':
           keyElement.classList.add('keyboard__key_extra-large');
           keyElement.classList.add('keyboard__key_dark');
+          keyElement.classList.add('keyboard__key_togglable');
           keyElement.innerHTML = createIcon('keyboard_capslock');
           break;
         case 'Enter':
@@ -120,12 +121,14 @@ const Keyboard = {
           keyDown.innerHTML = createIcon('keyboard_arrow_down');
           arrowContainer.appendChild(keyUp);
           arrowContainer.appendChild(keyDown);
+          this.elements.keys.push(arrowContainer);
           fragment.appendChild(arrowContainer);
           return;
         default:
           keyElement.innerHTML = key.toLowerCase();
           break;
       }
+      this.elements.keys.push(keyElement);
       fragment.appendChild(keyElement);
       if (insertLineBreak) {
         fragment.appendChild(document.createElement('br'));
@@ -139,4 +142,86 @@ const Keyboard = {
 
 window.addEventListener('DOMContentLoaded', () => {
   Keyboard.init();
+});
+
+
+document.addEventListener('keydown', (event) => {
+  const { keys } = Keyboard.elements;
+  if (event.location === 0 || event.location === 1) {
+    for (let i = 0; i < keys.length; i += 1) {
+      if (keys[i].innerText === event.key || (keys[i].innerText === 'backspace' && event.which === 8)
+        || (keys[i].innerText === 'keyboard_tab' && event.which === 9)
+        || (keys[i].innerText === 'keyboard_capslock' && event.which === 20)
+        || (keys[i].innerText === 'keyboard_return' && event.which === 13)
+        || (keys[i].innerText === 'keyboard_arrow_left' && event.which === 37)
+        || (keys[i].innerText === 'keyboard_arrow_right' && event.which === 39)
+        || (keys[i].innerText === 'space_bar' && event.which === 32)
+        || (keys[i].innerText === 'shift' && event.which === 16)
+        || (keys[i].innerText === 'alt' && event.which === 18)
+        || (keys[i].innerText === 'ctrl' && event.which === 17)) {
+        keys[i].style.animationName = 'pressed';
+        i = keys.length;
+      } else if (keys[i].innerText === 'keyboard_arrow_up\nkeyboard_arrow_down') {
+        if (event.which === 38) {
+          keys[i].firstChild.style.animationName = 'pressed';
+        } else if (event.which === 40) {
+          keys[i].lastChild.style.animationName = 'pressed';
+        }
+      }
+    }
+  } else {
+    switch (event.which) {
+      case 16:
+        keys[52].style.animationName = 'pressed';
+        break;
+      case 18:
+        keys[57].style.animationName = 'pressed';
+        break;
+      case 17:
+        keys[58].style.animationName = 'pressed';
+        break;
+      default:
+        break;
+    }
+  }
+});
+document.addEventListener('keyup', (event) => {
+  const { keys } = Keyboard.elements;
+  if (event.location === 0 || event.location === 1) {
+    for (let i = 0; i < keys.length; i += 1) {
+      if (keys[i].innerText === event.key || (keys[i].innerText === 'backspace' && event.which === 8)
+        || (keys[i].innerText === 'keyboard_tab' && event.which === 9)
+        || (keys[i].innerText === 'keyboard_capslock' && event.which === 20)
+        || (keys[i].innerText === 'keyboard_return' && event.which === 13)
+        || (keys[i].innerText === 'keyboard_arrow_left' && event.which === 37)
+        || (keys[i].innerText === 'keyboard_arrow_right' && event.which === 39)
+        || (keys[i].innerText === 'space_bar' && event.which === 32)
+        || (keys[i].innerText === 'shift' && event.which === 16)
+        || (keys[i].innerText === 'alt' && event.which === 18)
+        || (keys[i].innerText === 'ctrl' && event.which === 17)) {
+        keys[i].style.animationName = '';
+        i = keys.length;
+      } else if (keys[i].innerText === 'keyboard_arrow_up\nkeyboard_arrow_down') {
+        if (event.which === 38) {
+          keys[i].firstChild.style.animationName = '';
+        } else if (event.which === 40) {
+          keys[i].lastChild.style.animationName = '';
+        }
+      }
+    }
+  } else {
+    switch (event.which) {
+      case 16:
+        keys[52].style.animationName = '';
+        break;
+      case 18:
+        keys[57].style.animationName = '';
+        break;
+      case 17:
+        keys[58].style.animationName = '';
+        break;
+      default:
+        break;
+    }
+  }
 });

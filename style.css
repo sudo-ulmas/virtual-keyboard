@@ -5,6 +5,8 @@
     width: 100%;
     height: auto;
     background-color: #333333;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    user-select: none;
 }
 
 .keyboard__keys{
@@ -15,6 +17,8 @@
 .keyboard__key{
     
     position: relative;
+    cursor: pointer;
+    outline: none;
     width: 60px;
     height: 60px;
     font-size: x-large;
@@ -22,12 +26,20 @@
     align-items: center;
     justify-content: center;
     margin: 3.5px;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0, 0, 0, 0.4);
     color: #ffffff;
-    border: none;
-    border-radius: 10px;
+    border-radius: 5px;
     vertical-align: top;
-   
+    animation: 44s ease-in-out 0s 1 alternate;
+}
+.keyboard__key::-moz-focus-inner{
+  border: 0;
+}
+.keyboard__key_pressed{
+  margin-bottom: 0;
+}
+.keyboard__key:active{
+  background-color: rgba(255,255,255,0.14);
 }
 .arrow_column{
   position: relative;
@@ -93,3 +105,6 @@ position: absolute;
 left: 5px;
 top: -10px;
 }
+  @keyframes pressed {
+   from { background-color: rgba(0,255,0,0.4); } to { background-color: rgba(0,0,0,0.4); }
+    }
