@@ -4,6 +4,10 @@ const Keyboard = {
     keyboardContainer: null,
     keys: [],
   },
+  properties: {
+    caps: false,
+    russian: false,
+  },
 
   init() {
     this.elements.main = document.createElement('div');
@@ -13,6 +17,25 @@ const Keyboard = {
     this.elements.main.appendChild(this.elements.keyboardContainer);
     document.body.appendChild(this.elements.main);
     this.elements.keyboardContainer.appendChild(this.createKeys());
+  },
+
+  toggleCaps() {
+    if (this.properties.caps) {
+      this.elements.keys.forEach((e) => {
+        if (e.innerText.length === 1) {
+          e.innerText = e.innerText.toLowerCase();
+        }
+      });
+      this.elements.keys[28].classList.remove('keyboard__key_active');
+    } else {
+      this.elements.keys.forEach((e) => {
+        if (e.innerText.length === 1) {
+          e.innerText = e.innerText.toUpperCase();
+        }
+      });
+      this.elements.keys[28].classList.add('keyboard__key_active');
+    }
+    this.properties.caps = !this.properties.caps;
   },
 
   createKeys() {
@@ -159,7 +182,11 @@ document.addEventListener('keydown', (event) => {
         || (keys[i].innerText === 'shift' && event.which === 16)
         || (keys[i].innerText === 'alt' && event.which === 18)
         || (keys[i].innerText === 'ctrl' && event.which === 17)) {
-        keys[i].style.animationName = 'pressed';
+        if (event.which === 20) {
+          Keyboard.toggleCaps();
+        } else {
+          keys[i].style.animationName = 'pressed';
+        }
         i = keys.length;
       } else if (keys[i].innerText === 'keyboard_arrow_up\nkeyboard_arrow_down') {
         if (event.which === 38) {
