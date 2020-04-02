@@ -17,6 +17,28 @@ const Keyboard = {
     this.elements.main.appendChild(this.elements.keyboardContainer);
     document.body.appendChild(this.elements.main);
     this.elements.keyboardContainer.appendChild(this.createKeys());
+    this.elements.keys = this.elements.keyboardContainer.querySelectorAll('.keyboard__key');
+  },
+  toggleLanguage() {
+    const match = [
+      '`ё', '2', '1', '4', '3', '6', '5', '8', '7', '10', '2', '+', '+', 'Backspace',
+      'Tab', 'qй', 'wц', 'eу', 'rк', 'tе', 'yн', 'uг', 'iш', 'oщ', 'pз', '[х', ']ъ', '+',
+      'Caps Lock', 'aф', 'sы', 'dв', 'fа', 'gп', 'hр', 'jо', 'kл', 'lд', ';ж', '\'э', 'Enter',
+      'realShift', 'zя', 'xч', 'cс', 'vм', 'bи', 'nт', 'mь', ',б', '.ю', '+', 'Shift',
+    ];
+    this.elements.keys.forEach((e, i) => {
+      if (this.properties.russian) {
+        if (e.innerText.length === 1 && e.innerText.toLowerCase() === match[i].substring(1, 2)) {
+          e.innerText = this.properties.caps ? match[i].substring(0, 1).toUpperCase()
+            : match[i].substring(0, 1).toLowerCase();
+        }
+      } else
+      if (e.innerText.length === 1 && e.innerText.toLowerCase() === match[i].substring(0, 1)) {
+        e.innerText = this.properties.caps ? match[i].substring(1, 2).toUpperCase()
+          : match[i].substring(1, 2).toLowerCase();
+      }
+    });
+    this.properties.russian = !this.properties.russian;
   },
 
   toggleCaps() {
@@ -144,14 +166,12 @@ const Keyboard = {
           keyDown.innerHTML = createIcon('keyboard_arrow_down');
           arrowContainer.appendChild(keyUp);
           arrowContainer.appendChild(keyDown);
-          this.elements.keys.push(arrowContainer);
           fragment.appendChild(arrowContainer);
           return;
         default:
           keyElement.innerHTML = key.toLowerCase();
           break;
       }
-      this.elements.keys.push(keyElement);
       fragment.appendChild(keyElement);
       if (insertLineBreak) {
         fragment.appendChild(document.createElement('br'));
@@ -181,19 +201,15 @@ document.addEventListener('keydown', (event) => {
         || (keys[i].innerText === 'space_bar' && event.which === 32)
         || (keys[i].innerText === 'shift' && event.which === 16)
         || (keys[i].innerText === 'alt' && event.which === 18)
-        || (keys[i].innerText === 'ctrl' && event.which === 17)) {
+        || (keys[i].innerText === 'ctrl' && event.which === 17)
+        || (keys[i].innerText === 'keyboard_arrow_up' && event.which === 38)
+        || (keys[i].innerText === 'keyboard_arrow_down' && event.which === 40)) {
         if (event.which === 20) {
           Keyboard.toggleCaps();
         } else {
           keys[i].style.animationName = 'pressed';
         }
         i = keys.length;
-      } else if (keys[i].innerText === 'keyboard_arrow_up\nkeyboard_arrow_down') {
-        if (event.which === 38) {
-          keys[i].firstChild.style.animationName = 'pressed';
-        } else if (event.which === 40) {
-          keys[i].lastChild.style.animationName = 'pressed';
-        }
       }
     }
   } else {
@@ -225,15 +241,11 @@ document.addEventListener('keyup', (event) => {
         || (keys[i].innerText === 'space_bar' && event.which === 32)
         || (keys[i].innerText === 'shift' && event.which === 16)
         || (keys[i].innerText === 'alt' && event.which === 18)
-        || (keys[i].innerText === 'ctrl' && event.which === 17)) {
+        || (keys[i].innerText === 'ctrl' && event.which === 17)
+        || (keys[i].innerText === 'keyboard_arrow_up' && event.which === 38)
+        || (keys[i].innerText === 'keyboard_arrow_down' && event.which === 40)) {
         keys[i].style.animationName = '';
         i = keys.length;
-      } else if (keys[i].innerText === 'keyboard_arrow_up\nkeyboard_arrow_down') {
-        if (event.which === 38) {
-          keys[i].firstChild.style.animationName = '';
-        } else if (event.which === 40) {
-          keys[i].lastChild.style.animationName = '';
-        }
       }
     }
   } else {
