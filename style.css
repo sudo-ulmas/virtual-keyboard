@@ -1,3 +1,6 @@
+body{
+  background-color: #333333;
+}
 .keyboard{
     position: fixed;
     left: 0;
@@ -7,6 +10,12 @@
     background-color: #333333;
     box-shadow: 0 0 50px rgba(0,0,0,0.5);
     user-select: none;
+}
+.keyboard__output{
+  position: fixed;
+  top: 5%;
+  left: 12%;
+  font-size: 20px;
 }
 
 .keyboard__keys{

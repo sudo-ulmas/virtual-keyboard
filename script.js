@@ -1,5 +1,6 @@
 const Keyboard = {
   elements: {
+    textArea: null,
     main: null,
     keyboardContainer: null,
     keys: [],
@@ -12,11 +13,16 @@ const Keyboard = {
   },
 
   init() {
+    this.elements.textArea = document.createElement('textarea');
+    this.elements.textArea.setAttribute('cols','100');
+    this.elements.textArea.setAttribute('rows','15');
+    this.elements.textArea.classList.add('keyboard__output');
     this.elements.main = document.createElement('div');
     this.elements.keyboardContainer = document.createElement('div');
     this.elements.main.classList.add('keyboard');
     this.elements.keyboardContainer.classList.add('keyboard__keys');
     this.elements.main.appendChild(this.elements.keyboardContainer);
+    document.body.appendChild(this.elements.textArea);
     document.body.appendChild(this.elements.main);
     this.elements.keyboardContainer.appendChild(this.createKeys());
     this.elements.keys = this.elements.keyboardContainer.querySelectorAll('.keyboard__key');
@@ -71,15 +77,18 @@ const Keyboard = {
 
     return value;
   },
-  updateValue(keyValue) {
-    if (keyValue.length === 1) {
-      this.properties.value += keyValue;
+  output(keyValue) {
+    if (keyValue.length === 1 && keyValue !== ' ') {
+      this.elements.textArea.value += keyValue;
     } else if (keyValue === 'Backspace') {
-      this.properties.value = this.properties.value.substring(0, this.properties.value.length - 1);
+      this.elements.textArea.value = this.elements.textArea.value
+        .substring(0, this.elements.textArea.value.length - 1);
     } else if (keyValue === 'Enter') {
-      this.properties.value += '\n';
+      this.elements.textArea.value += '\n';
     } else if (keyValue === 'Tab') {
-      this.properties.value += '  ';
+      this.elements.textArea.value += '   ';
+    } else if (keyValue === ' ') {
+      this.elements.textArea += ' ';
     }
   },
 
@@ -162,8 +171,8 @@ const Keyboard = {
           keyElement.classList.add('keyboard__key_dark');
           keyElement.innerHTML = createIcon('backspace');
           keyElement.addEventListener('click', () => {
-            this.properties.value = this.properties.value
-              .substring(0, this.properties.value.length - 1);
+            this.elements.textArea.value = this.elements.textArea.value
+              .substring(0, this.elements.textArea.value.length - 1);
           });
           break;
         case 'Tab':
@@ -171,7 +180,7 @@ const Keyboard = {
           keyElement.classList.add('keyboard__key_dark');
           keyElement.innerHTML = createIcon('keyboard_tab');
           keyElement.addEventListener('click', () => {
-            this.properties.value += '  ';
+            this.elements.textArea.value += '  ';
           });
           break;
         case '\\':
@@ -179,7 +188,7 @@ const Keyboard = {
           keyElement.classList.add('keyboard__key_dark');
           keyElement.innerHTML = key.toLowerCase();
           keyElement.addEventListener('click', () => {
-            this.properties.value += '\\';
+            this.elements.textArea.value += '\\';
           });
           break;
         case 'Caps Lock':
@@ -196,7 +205,7 @@ const Keyboard = {
           keyElement.classList.add('keyboard__key_dark');
           keyElement.innerHTML = createIcon('keyboard_return');
           keyElement.addEventListener('click', () => {
-            this.properties.value += '\n';
+            this.elements.textArea.value += '\n';
           });
           break;
         case 'Shift':
@@ -226,7 +235,7 @@ const Keyboard = {
           keyElement.classList.add('keyboard__key_ultra-large');
           keyElement.innerHTML = createIcon('space_bar');
           keyElement.addEventListener('click', () => {
-            this.properties.value += ' ';
+            this.elements.textArea.value += ' ';
           });
           break;
         case 'Left':
@@ -254,7 +263,7 @@ const Keyboard = {
         default:
           keyElement.innerHTML = key;
           keyElement.addEventListener('click', () => {
-            this.properties.value += keyElement.innerHTML;
+            this.elements.textArea.value += keyElement.innerHTML;
           });
           break;
       }
@@ -282,7 +291,7 @@ document.addEventListener('keydown', (event) => {
     Keyboard.toggleLanguage();
   }
   const key = Keyboard.adjustLanguage(event.which, event.key);
-  Keyboard.updateValue(key);
+  Keyboard.output(key);
   if (event.location === 0 || event.location === 1) {
     for (let i = 0; i < keys.length; i += 1) {
       if (keys[i].innerText === key || (keys[i].innerText === 'backspace' && event.which === 8)
