@@ -5,6 +5,7 @@ const Keyboard = {
     keys: [],
   },
   properties: {
+    value: '',
     caps: false,
     russian: false,
     map: [],
@@ -20,30 +21,68 @@ const Keyboard = {
     this.elements.keyboardContainer.appendChild(this.createKeys());
     this.elements.keys = this.elements.keyboardContainer.querySelectorAll('.keyboard__key');
   },
-  
-  adjustLanguage(code, value) {
-    keyMap = {
-      192: '`ё', 81: 'qй', 87: 'wц', 69: 'eу', 82: 'rк', 84: 'tе', 89: 'yн',
-      85: 'uг', 73: 'iш',79: 'oщ', 80: 'pз',219: '[х',221: ']ъ',
-      65: 'aф', 83: 'sы', 68: 'dв', 70: 'fа', 71: 'gп', 72: 'hр', 74: 'jо',
-      75: 'kл', 76: 'lд', 59: ';ж', 222: '\'э',
-      90: 'zя', 88: 'xч', 67: 'cс', 86: 'vм',
-      66: 'bи', 78: 'nт', 77: 'mь', 188: ',б', 190: '.ю',};
 
-      if (keyMap[code] !== undefined) {
-        if (this.properties.russian) {
-          return this.properties.caps ? keyMap[code].substring(1, 2).toUpperCase()
+  adjustLanguage(code, value) {
+    const keyMap = {
+      192: '`ё',
+      81: 'qй',
+      87: 'wц',
+      69: 'eу',
+      82: 'rк',
+      84: 'tе',
+      89: 'yн',
+      85: 'uг',
+      73: 'iш',
+      79: 'oщ',
+      80: 'pз',
+      219: '[х',
+      221: ']ъ',
+      65: 'aф',
+      83: 'sы',
+      68: 'dв',
+      70: 'fа',
+      71: 'gп',
+      72: 'hр',
+      74: 'jо',
+      75: 'kл',
+      76: 'lд',
+      59: ';ж',
+      222: '\'э',
+      90: 'zя',
+      88: 'xч',
+      67: 'cс',
+      86: 'vм',
+      66: 'bи',
+      78: 'nт',
+      77: 'mь',
+      188: ',б',
+      190: '.ю',
+    };
+
+    if (keyMap[code] !== undefined) {
+      if (this.properties.russian) {
+        return this.properties.caps ? keyMap[code].substring(1, 2).toUpperCase()
           : keyMap[code].substring(1, 2).toLowerCase();
-        } 
-        else {
-          return this.properties.caps ? keyMap[code].substring(0, 1).toUpperCase()
-            : keyMap[code].substring(0, 1).toLowerCase();
-        }
       }
-      else {
-        return value;
-      }  
+
+      return this.properties.caps ? keyMap[code].substring(0, 1).toUpperCase()
+        : keyMap[code].substring(0, 1).toLowerCase();
+    }
+
+    return value;
   },
+  updateValue(keyValue) {
+    if (keyValue.length === 1) {
+      this.properties.value += keyValue;
+    } else if (keyValue === 'Backspace') {
+      this.properties.value = this.properties.value.substring(0, this.properties.value.length - 1);
+    } else if (keyValue === 'Enter') {
+      this.properties.value += '\n';
+    } else if (keyValue === 'Tab') {
+      this.properties.value += '  ';
+    }
+  },
+
   toggleLanguage() {
     const match = [
       '`ё', '2', '1', '4', '3', '6', '5', '8', '7', '10', '2', '+', '+', 'Backspace',
@@ -122,27 +161,43 @@ const Keyboard = {
           keyElement.classList.add('keyboard__key_extra-large');
           keyElement.classList.add('keyboard__key_dark');
           keyElement.innerHTML = createIcon('backspace');
+          keyElement.addEventListener('click', () => {
+            this.properties.value = this.properties.value
+              .substring(0, this.properties.value.length - 1);
+          });
           break;
         case 'Tab':
           keyElement.classList.add('keyboard__key_large');
           keyElement.classList.add('keyboard__key_dark');
           keyElement.innerHTML = createIcon('keyboard_tab');
+          keyElement.addEventListener('click', () => {
+            this.properties.value += '  ';
+          });
           break;
         case '\\':
           keyElement.classList.add('keyboard__key_large');
           keyElement.classList.add('keyboard__key_dark');
           keyElement.innerHTML = key.toLowerCase();
+          keyElement.addEventListener('click', () => {
+            this.properties.value += '\\';
+          });
           break;
         case 'Caps Lock':
           keyElement.classList.add('keyboard__key_extra-large');
           keyElement.classList.add('keyboard__key_dark');
           keyElement.classList.add('keyboard__key_togglable');
           keyElement.innerHTML = createIcon('keyboard_capslock');
+          keyElement.addEventListener('click', () => {
+            this.toggleCaps();
+          });
           break;
         case 'Enter':
           keyElement.classList.add('keyboard__key_extra-large');
           keyElement.classList.add('keyboard__key_dark');
           keyElement.innerHTML = createIcon('keyboard_return');
+          keyElement.addEventListener('click', () => {
+            this.properties.value += '\n';
+          });
           break;
         case 'Shift':
           keyElement.classList.add('keyboard__key_extra-large');
@@ -170,6 +225,9 @@ const Keyboard = {
         case 'Space':
           keyElement.classList.add('keyboard__key_ultra-large');
           keyElement.innerHTML = createIcon('space_bar');
+          keyElement.addEventListener('click', () => {
+            this.properties.value += ' ';
+          });
           break;
         case 'Left':
           keyElement.classList.add('keyboard__key_dark');
@@ -194,7 +252,10 @@ const Keyboard = {
           fragment.appendChild(arrowContainer);
           return;
         default:
-          keyElement.innerHTML = key.toLowerCase();
+          keyElement.innerHTML = key;
+          keyElement.addEventListener('click', () => {
+            this.properties.value += keyElement.innerHTML;
+          });
           break;
       }
       fragment.appendChild(keyElement);
@@ -221,7 +282,7 @@ document.addEventListener('keydown', (event) => {
     Keyboard.toggleLanguage();
   }
   const key = Keyboard.adjustLanguage(event.which, event.key);
-  
+  Keyboard.updateValue(key);
   if (event.location === 0 || event.location === 1) {
     for (let i = 0; i < keys.length; i += 1) {
       if (keys[i].innerText === key || (keys[i].innerText === 'backspace' && event.which === 8)
@@ -262,7 +323,7 @@ document.addEventListener('keydown', (event) => {
 });
 document.addEventListener('keyup', (event) => {
   Keyboard.properties.map[event.which] = false;
-  
+
   const { keys } = Keyboard.elements;
   const key = Keyboard.adjustLanguage(event.which, event.key);
   if (event.location === 0 || event.location === 1) {
