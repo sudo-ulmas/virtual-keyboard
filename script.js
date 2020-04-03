@@ -7,6 +7,7 @@ const Keyboard = {
   properties: {
     caps: false,
     russian: false,
+    map: [],
   },
 
   init() {
@@ -18,6 +19,30 @@ const Keyboard = {
     document.body.appendChild(this.elements.main);
     this.elements.keyboardContainer.appendChild(this.createKeys());
     this.elements.keys = this.elements.keyboardContainer.querySelectorAll('.keyboard__key');
+  },
+  
+  adjustLanguage(code, value) {
+    keyMap = {
+      192: '`ё', 81: 'qй', 87: 'wц', 69: 'eу', 82: 'rк', 84: 'tе', 89: 'yн',
+      85: 'uг', 73: 'iш',79: 'oщ', 80: 'pз',219: '[х',221: ']ъ',
+      65: 'aф', 83: 'sы', 68: 'dв', 70: 'fа', 71: 'gп', 72: 'hр', 74: 'jо',
+      75: 'kл', 76: 'lд', 59: ';ж', 222: '\'э',
+      90: 'zя', 88: 'xч', 67: 'cс', 86: 'vм',
+      66: 'bи', 78: 'nт', 77: 'mь', 188: ',б', 190: '.ю',};
+
+      if (keyMap[code] !== undefined) {
+        if (this.properties.russian) {
+          return this.properties.caps ? keyMap[code].substring(1, 2).toUpperCase()
+          : keyMap[code].substring(1, 2).toLowerCase();
+        } 
+        else {
+          return this.properties.caps ? keyMap[code].substring(0, 1).toUpperCase()
+            : keyMap[code].substring(0, 1).toLowerCase();
+        }
+      }
+      else {
+        return value;
+      }  
   },
   toggleLanguage() {
     const match = [
@@ -190,9 +215,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('keydown', (event) => {
   const { keys } = Keyboard.elements;
+  const { map } = Keyboard.properties;
+  map[event.which] = true;
+  if (map[16] && map[18]) {
+    Keyboard.toggleLanguage();
+  }
+  const key = Keyboard.adjustLanguage(event.which, event.key);
+  
   if (event.location === 0 || event.location === 1) {
     for (let i = 0; i < keys.length; i += 1) {
-      if (keys[i].innerText === event.key || (keys[i].innerText === 'backspace' && event.which === 8)
+      if (keys[i].innerText === key || (keys[i].innerText === 'backspace' && event.which === 8)
         || (keys[i].innerText === 'keyboard_tab' && event.which === 9)
         || (keys[i].innerText === 'keyboard_capslock' && event.which === 20)
         || (keys[i].innerText === 'keyboard_return' && event.which === 13)
@@ -229,10 +261,13 @@ document.addEventListener('keydown', (event) => {
   }
 });
 document.addEventListener('keyup', (event) => {
+  Keyboard.properties.map[event.which] = false;
+  
   const { keys } = Keyboard.elements;
+  const key = Keyboard.adjustLanguage(event.which, event.key);
   if (event.location === 0 || event.location === 1) {
     for (let i = 0; i < keys.length; i += 1) {
-      if (keys[i].innerText === event.key || (keys[i].innerText === 'backspace' && event.which === 8)
+      if (keys[i].innerText === key || (keys[i].innerText === 'backspace' && event.which === 8)
         || (keys[i].innerText === 'keyboard_tab' && event.which === 9)
         || (keys[i].innerText === 'keyboard_capslock' && event.which === 20)
         || (keys[i].innerText === 'keyboard_return' && event.which === 13)
