@@ -14,8 +14,8 @@ const Keyboard = {
 
   init() {
     this.elements.textArea = document.createElement('textarea');
-    this.elements.textArea.setAttribute('cols','100');
-    this.elements.textArea.setAttribute('rows','15');
+    this.elements.textArea.setAttribute('cols', '100');
+    this.elements.textArea.setAttribute('rows', '15');
     this.elements.textArea.classList.add('keyboard__output');
     this.elements.main = document.createElement('div');
     this.elements.keyboardContainer = document.createElement('div');
@@ -79,17 +79,26 @@ const Keyboard = {
   },
   output(keyValue) {
     if (keyValue.length === 1 && keyValue !== ' ') {
-      this.elements.textArea.value += keyValue;
+      this.properties.value += keyValue;
     } else if (keyValue === 'Backspace') {
-      this.elements.textArea.value = this.elements.textArea.value
-        .substring(0, this.elements.textArea.value.length - 1);
+      this.properties.value = this.properties.value
+        .substring(0, this.properties.value.length - 1);
     } else if (keyValue === 'Enter') {
-      this.elements.textArea.value += '\n';
-    } else if (keyValue === 'Tab') {
-      this.elements.textArea.value += '   ';
+      this.properties.value += '\n';
     } else if (keyValue === ' ') {
-      this.elements.textArea += ' ';
+      this.properties.value += ' ';
+    } else if (keyValue === 'Tab') {
+      this.properties.value += '    ';
+    } else if (keyValue === 'ArrowLeft') {
+      this.properties.value += '🡰';
+    } else if (keyValue === 'ArrowRight') {
+      this.properties.value += '🡲';
+    } else if (keyValue === 'ArrowUp') {
+      this.properties.value += '🡱';
+    } else if (keyValue === 'ArrowDown') {
+      this.properties.value += '🡳';
     }
+    this.elements.textArea.value = this.properties.value;
   },
 
   toggleLanguage() {
@@ -105,8 +114,8 @@ const Keyboard = {
           e.innerText = this.properties.caps ? match[i].substring(0, 1).toUpperCase()
             : match[i].substring(0, 1).toLowerCase();
         }
-      } else
-      if (e.innerText.length === 1 && e.innerText.toLowerCase() === match[i].substring(0, 1)) {
+      } else if (e.innerText.length === 1
+         && e.innerText.toLowerCase() === match[i].substring(0, 1)) {
         e.innerText = this.properties.caps ? match[i].substring(1, 2).toUpperCase()
           : match[i].substring(1, 2).toLowerCase();
       }
@@ -136,8 +145,7 @@ const Keyboard = {
   createKeys() {
     const createIcon = (iconName) => `<i class="material-icons">${iconName}</i>`;
     const fragment = document.createDocumentFragment();
-    const keyUp = document.createElement('button');
-    const keyDown = document.createElement('button');
+
     const arrowContainer = document.createElement('span');
     const keyLayout = [
       '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
@@ -152,6 +160,8 @@ const Keyboard = {
 
     keyLayout.forEach((key, index) => {
       const keyElement = document.createElement('button');
+      const keyUp = document.createElement('button');
+      const keyDown = document.createElement('button');
       const insertLineBreak = ['Backspace', '\\', 'Enter', 'Shift', 'Right'].indexOf(key) !== -1;
       keyElement.setAttribute('type', 'button');
       if (secondaryKeys[index] !== undefined) {
@@ -171,8 +181,7 @@ const Keyboard = {
           keyElement.classList.add('keyboard__key_dark');
           keyElement.innerHTML = createIcon('backspace');
           keyElement.addEventListener('click', () => {
-            this.elements.textArea.value = this.elements.textArea.value
-              .substring(0, this.elements.textArea.value.length - 1);
+            this.output('Backspace');
           });
           break;
         case 'Tab':
@@ -180,7 +189,7 @@ const Keyboard = {
           keyElement.classList.add('keyboard__key_dark');
           keyElement.innerHTML = createIcon('keyboard_tab');
           keyElement.addEventListener('click', () => {
-            this.elements.textArea.value += '  ';
+            this.output('Tab');
           });
           break;
         case '\\':
@@ -188,7 +197,7 @@ const Keyboard = {
           keyElement.classList.add('keyboard__key_dark');
           keyElement.innerHTML = key.toLowerCase();
           keyElement.addEventListener('click', () => {
-            this.elements.textArea.value += '\\';
+            this.output('\\');
           });
           break;
         case 'Caps Lock':
@@ -205,7 +214,7 @@ const Keyboard = {
           keyElement.classList.add('keyboard__key_dark');
           keyElement.innerHTML = createIcon('keyboard_return');
           keyElement.addEventListener('click', () => {
-            this.elements.textArea.value += '\n';
+            this.output('Enter');
           });
           break;
         case 'Shift':
@@ -235,16 +244,22 @@ const Keyboard = {
           keyElement.classList.add('keyboard__key_ultra-large');
           keyElement.innerHTML = createIcon('space_bar');
           keyElement.addEventListener('click', () => {
-            this.elements.textArea.value += ' ';
+            this.output(' ');
           });
           break;
         case 'Left':
           keyElement.classList.add('keyboard__key_dark');
           keyElement.innerHTML = createIcon('keyboard_arrow_left');
+          keyElement.addEventListener('click', () => {
+            this.output('ArrowLeft');
+          });
           break;
         case 'Right':
           keyElement.classList.add('keyboard__key_dark');
           keyElement.innerHTML = createIcon('keyboard_arrow_right');
+          keyElement.addEventListener('click', () => {
+            this.output('ArrowRight');
+          });
           break;
         case 'Top-Bottom':
           arrowContainer.classList.add('arrow_column');
@@ -259,11 +274,17 @@ const Keyboard = {
           arrowContainer.appendChild(keyUp);
           arrowContainer.appendChild(keyDown);
           fragment.appendChild(arrowContainer);
+          keyUp.addEventListener('click', () => {
+            this.output('ArrowUp');
+          });
+          keyDown.addEventListener('click', () => {
+            this.output('ArrowDown');
+          });
           return;
         default:
           keyElement.innerHTML = key;
           keyElement.addEventListener('click', () => {
-            this.elements.textArea.value += keyElement.innerHTML;
+            this.output(keyElement.innerText);
           });
           break;
       }
@@ -284,6 +305,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener('keydown', (event) => {
+  event.preventDefault();
   const { keys } = Keyboard.elements;
   const { map } = Keyboard.properties;
   map[event.which] = true;
