@@ -79,15 +79,14 @@ const Keyboard = {
   },
   output(keyValue) {
     if (keyValue.length === 1 && keyValue !== ' ') {
-      // if(this.properties.map[16]) {
-      //   this.properties.caps ?
-      //    this.properties.value += keyValue.toLowerCase() :
-      //     this.properties.value += keyValue.toUpperCase();
-      // }
-      // else {
-      //   this.properties.value += keyValue;
-      // }
-      this.properties.value += keyValue;
+      if(this.properties.map[16]) {
+        this.properties.caps ?
+         this.properties.value += keyValue.toLowerCase() :
+          this.properties.value += keyValue.toUpperCase();
+      }
+      else {
+        this.properties.value += keyValue;
+      }
     } else if (keyValue === 'Backspace') {
       this.properties.value = this.properties.value
         .substring(0, this.properties.value.length - 1);
