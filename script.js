@@ -15,7 +15,7 @@ const Keyboard = {
   init() {
     this.elements.textArea = document.createElement('textarea');
     this.elements.textArea.setAttribute('cols', '100');
-    this.elements.textArea.setAttribute('rows', '15');
+    this.elements.textArea.setAttribute('rows', '9');
     this.elements.textArea.classList.add('keyboard__output');
     this.elements.main = document.createElement('div');
     this.elements.keyboardContainer = document.createElement('div');
