@@ -79,6 +79,14 @@ const Keyboard = {
   },
   output(keyValue) {
     if (keyValue.length === 1 && keyValue !== ' ') {
+      // if(this.properties.map[16]) {
+      //   this.properties.caps ?
+      //    this.properties.value += keyValue.toLowerCase() :
+      //     this.properties.value += keyValue.toUpperCase();
+      // }
+      // else {
+      //   this.properties.value += keyValue;
+      // } 
       this.properties.value += keyValue;
     } else if (keyValue === 'Backspace') {
       this.properties.value = this.properties.value
@@ -305,7 +313,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener('keydown', (event) => {
-  event.preventDefault();
   const { keys } = Keyboard.elements;
   const { map } = Keyboard.properties;
   map[event.which] = true;
@@ -314,6 +321,7 @@ document.addEventListener('keydown', (event) => {
   }
   const key = Keyboard.adjustLanguage(event.which, event.key);
   Keyboard.output(key);
+  event.preventDefault();
   if (event.location === 0 || event.location === 1) {
     for (let i = 0; i < keys.length; i += 1) {
       if (keys[i].innerText === key || (keys[i].innerText === 'backspace' && event.which === 8)
