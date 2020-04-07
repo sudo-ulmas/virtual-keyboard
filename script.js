@@ -86,7 +86,7 @@ const Keyboard = {
       // }
       // else {
       //   this.properties.value += keyValue;
-      // } 
+      // }
       this.properties.value += keyValue;
     } else if (keyValue === 'Backspace') {
       this.properties.value = this.properties.value
