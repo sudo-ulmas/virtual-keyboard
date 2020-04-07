@@ -13,11 +13,19 @@ body{
 }
 .keyboard__output{
   position: fixed;
-  top: 5%;
+  top: 10%;
   left: 12%;
   font-size: 20px;
 }
-
+p{
+  margin: 0 auto;
+  font-size: 25px;
+  text-align: center;
+  
+}
+b{
+  color: red;
+}
 .keyboard__keys{
     text-align: center;
     margin: 0 5%;

@@ -26,6 +26,9 @@ const Keyboard = {
     document.body.appendChild(this.elements.main);
     this.elements.keyboardContainer.appendChild(this.createKeys());
     this.elements.keys = this.elements.keyboardContainer.querySelectorAll('.keyboard__key');
+    const text = document.createElement('p');
+    text.innerHTML = 'The keyboard was created in Linux OS<br> Press <b>Shift + Alt</b> to toggle the languages';
+    document.body.appendChild(text);
   },
 
   adjustLanguage(code, value) {
@@ -128,6 +131,7 @@ const Keyboard = {
       }
     });
     this.properties.russian = !this.properties.russian;
+    localStorage.setItem('lang',this.properties.russian);
   },
 
   toggleCaps() {
@@ -155,10 +159,10 @@ const Keyboard = {
 
     const arrowContainer = document.createElement('span');
     const keyLayout = [
-      '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
-      'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\',
-      'Caps Lock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'Enter',
-      'realShift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'Shift',
+      '`ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
+      'Tab', 'qй', 'wц', 'eу', 'rк', 'tе', 'yн', 'uг', 'iш', 'oщ', 'pз', '[х', ']ъ', '\\',
+      'Caps Lock', 'aф', 'sы', 'dв', 'fа', 'gп', 'hр', 'jо', 'kл', 'lд', ';ж', '\'э', 'Enter',
+      'realShift', 'zя', 'xч', 'cс', 'vм', 'bи', 'nт', 'mь', ',б', '.ю', '/', 'Shift',
       'Ctrl', 'Win', 'Alt', 'Space', 'Alt', 'Ctrl', 'Left', 'Top-Bottom', 'Right',
     ];
     const secondaryKeys = [
@@ -289,7 +293,13 @@ const Keyboard = {
           });
           return;
         default:
-          keyElement.innerHTML = key;
+          if (key.length === 2) {
+            localStorage.getItem('lang') === "true" ? keyElement.innerHTML = key[1]
+            : keyElement.innerHTML = key[0];
+          } 
+          else {
+            keyElement.innerHTML = key;
+          }
           keyElement.addEventListener('click', () => {
             this.output(keyElement.innerText);
           });
@@ -308,6 +318,7 @@ const Keyboard = {
 
 window.addEventListener('DOMContentLoaded', () => {
   Keyboard.init();
+  
 });
 
 
