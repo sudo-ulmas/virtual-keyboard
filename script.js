@@ -82,12 +82,13 @@ const Keyboard = {
   },
   output(keyValue) {
     if (keyValue.length === 1 && keyValue !== ' ') {
-      if(this.properties.map[16]) {
-        this.properties.caps ?
-         this.properties.value += keyValue.toLowerCase() :
+      if (this.properties.map[16]) {
+        if (this.properties.caps === true) {
+          this.properties.value += keyValue.toLowerCase();
+        } else {
           this.properties.value += keyValue.toUpperCase();
-      }
-      else {
+        }
+      } else {
         this.properties.value += keyValue;
       }
     } else if (keyValue === 'Backspace') {
@@ -131,7 +132,7 @@ const Keyboard = {
       }
     });
     this.properties.russian = !this.properties.russian;
-    localStorage.setItem('lang',this.properties.russian);
+    localStorage.setItem('lang', this.properties.russian);
   },
 
   toggleCaps() {
@@ -294,10 +295,12 @@ const Keyboard = {
           return;
         default:
           if (key.length === 2) {
-            localStorage.getItem('lang') === "true" ? keyElement.innerHTML = key[1]
-            : keyElement.innerHTML = key[0];
-          } 
-          else {
+            if (localStorage.getItem('lang') === 'true') {
+              [, keyElement.innerHTML] = key;
+            } else {
+              [keyElement.innerHTML] = key;
+            }
+          } else {
             keyElement.innerHTML = key;
           }
           keyElement.addEventListener('click', () => {
@@ -318,7 +321,6 @@ const Keyboard = {
 
 window.addEventListener('DOMContentLoaded', () => {
   Keyboard.init();
-  
 });
 
 
